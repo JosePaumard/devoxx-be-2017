@@ -26,5 +26,12 @@ public class Devoxx2017C {
                         );
         System.out.println("numberOfArticlesPerAuthor.size() = " + numberOfArticlesPerAuthor.size());
 
+        Map.Entry<Author, Long> authorWithTheMostArticles =
+                numberOfArticlesPerAuthor
+                        .entrySet().stream()
+                        .max(Comparator.comparing(entry -> entry.getValue()))
+                        .get();
+        System.out.println("authorWithTheMostArticles = " + authorWithTheMostArticles);
+
     }
 }
