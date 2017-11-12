@@ -14,6 +14,15 @@ public class Devoxx2017C {
     public static void main(String[] args) {
 
         Set<Article> articles = Article.readAll();
-
+        
+        Map<Author, Long> numberOfArticlesPerAuthor =
+                articles.stream()
+                        .flatMap(article -> article.getAuthors().stream())
+                        .collect(
+                                Collectors.groupingBy(
+                                        Function.identity(),
+                                        Collectors.counting()
+                                )
+                        );
     }
 }
