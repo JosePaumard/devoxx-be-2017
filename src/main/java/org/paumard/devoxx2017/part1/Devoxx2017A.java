@@ -24,5 +24,13 @@ public class Devoxx2017A {
                         .min(Comparator.naturalOrder())
                         .get();
         System.out.println("minYear = " + minYear);
+
+        int maxYear =
+                articles.stream()
+                        .filter(article -> article.getInceptionYear() > 1900)
+                        .map(Article::getInceptionYear)
+                        .max(Comparator.naturalOrder())
+                        .get();
+        System.out.println("maxYear = " + maxYear);
     }
 }
