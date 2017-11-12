@@ -3,6 +3,7 @@ package org.paumard.devoxx2017.part1;
 import org.paumard.devoxx2017.model.Article;
 
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.Set;
 
 public class Devoxx2017A {
@@ -32,5 +33,12 @@ public class Devoxx2017A {
                         .max(Comparator.naturalOrder())
                         .get();
         System.out.println("maxYear = " + maxYear);
-    }
+
+        IntSummaryStatistics statistics =
+                articles.stream()
+                        .filter(article -> article.getInceptionYear() > 1900)
+                        .mapToInt(Article::getInceptionYear)
+                        .summaryStatistics();
+        System.out.println("statistics = " + statistics);
+        }
 }
