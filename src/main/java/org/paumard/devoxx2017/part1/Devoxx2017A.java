@@ -5,6 +5,7 @@ import org.paumard.devoxx2017.model.Article;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Devoxx2017A {
 
@@ -15,14 +16,16 @@ public class Devoxx2017A {
 
 
         long count = articles.stream()
-                .count();
+                .collect(Collectors.counting());
+//                .count();
         System.out.println("count = " + count);
 
         int minYear =
                 articles.stream()
                         .filter(article -> article.getInceptionYear() > 1900)
                         .map(Article::getInceptionYear)
-                        .min(Comparator.naturalOrder())
+//                .min(Comparator.naturalOrder())
+                        .collect(Collectors.minBy(Comparator.naturalOrder()))
                         .get();
         System.out.println("minYear = " + minYear);
 
@@ -30,7 +33,8 @@ public class Devoxx2017A {
                 articles.stream()
                         .filter(article -> article.getInceptionYear() > 1900)
                         .map(Article::getInceptionYear)
-                        .max(Comparator.naturalOrder())
+//                        .max(Comparator.naturalOrder())
+                        .collect(Collectors.maxBy(Comparator.naturalOrder()))
                         .get();
         System.out.println("maxYear = " + maxYear);
 
