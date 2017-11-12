@@ -44,5 +44,11 @@ public class Devoxx2017A {
                         .mapToInt(Article::getInceptionYear)
                         .summaryStatistics();
         System.out.println("statistics = " + statistics);
-        }
+
+        IntSummaryStatistics collectedStatistics =
+                articles.stream()
+                        .filter(article -> article.getInceptionYear() > 1900)
+                        .collect(Collectors.summarizingInt(Article::getInceptionYear));
+        System.out.println("collectedStatistics = " + collectedStatistics);
+    }
 }
