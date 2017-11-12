@@ -50,5 +50,11 @@ public class Devoxx2017A {
                         .filter(article -> article.getInceptionYear() > 1900)
                         .collect(Collectors.summarizingInt(Article::getInceptionYear));
         System.out.println("collectedStatistics = " + collectedStatistics);
+
+        String article19160 = articles.stream()
+                .filter(article -> article.getInceptionYear() == 1960)
+                .map(Article::getTitle)
+                .collect(Collectors.joining(", "));
+        System.out.println("article19160 = " + article19160);
     }
 }
