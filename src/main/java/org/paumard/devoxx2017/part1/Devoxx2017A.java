@@ -2,6 +2,7 @@ package org.paumard.devoxx2017.part1;
 
 import org.paumard.devoxx2017.model.Article;
 
+import java.util.Comparator;
 import java.util.Set;
 
 public class Devoxx2017A {
@@ -16,5 +17,12 @@ public class Devoxx2017A {
                 .count();
         System.out.println("count = " + count);
 
+        int minYear =
+                articles.stream()
+                        .filter(article -> article.getInceptionYear() > 1900)
+                        .map(Article::getInceptionYear)
+                        .min(Comparator.naturalOrder())
+                        .get();
+        System.out.println("minYear = " + minYear);
     }
 }
