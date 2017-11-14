@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Devoxx2017D {
@@ -15,20 +16,26 @@ public class Devoxx2017D {
         Set<Article> articles = Article.readAll();
 
         // # articles per year
-        Map<Integer, Long> numberOfArticlePerYear =
-                articles.stream()
-                        .collect(
-                                Collectors.groupingBy(
-                                        Article::getInceptionYear,
-                                        Collectors.counting()
-                                )
-                        );
-        System.out.println("numberOfArticlePerYear = " + numberOfArticlePerYear);
-
         Function<Map<Integer, Long>, Entry<Integer, Long>> maxByValue =
                 map -> map.entrySet().stream()
                         .max(Entry.comparingByValue())
                         .get();
+
+        Collector<Article, ?, Map<Integer, Long>> groupingBy = Collectors.groupingBy(
+                Article::getInceptionYear,
+                Collectors.counting()
+        );
+
+        Collector<Article, ?, Entry<Integer, Long>> collectingAndThen = Collectors.collectingAndThen(
+                groupingBy, maxByValue
+        );
+
+        Map<Integer, Long> numberOfArticlePerYear =
+                articles.stream()
+                        .collect(
+                                groupingBy
+                        );
+        System.out.println("numberOfArticlePerYear = " + numberOfArticlePerYear);
 
         Entry<Integer, Long> maxNumberOFArticlesPerYear =
                 maxByValue.apply(numberOfArticlePerYear);
