@@ -30,15 +30,11 @@ public class Devoxx2017D {
                 groupingBy, maxByValue
         );
 
-        Map<Integer, Long> numberOfArticlePerYear =
+        Entry<Integer, Long> maxNumberOFArticlesPerYear =
                 articles.stream()
                         .collect(
-                                groupingBy
+                                collectingAndThen
                         );
-        System.out.println("numberOfArticlePerYear = " + numberOfArticlePerYear);
-
-        Entry<Integer, Long> maxNumberOFArticlesPerYear =
-                maxByValue.apply(numberOfArticlePerYear);
         System.out.println("maxNumberOFArticlesPerYear = " + maxNumberOFArticlesPerYear);
     }
 }
