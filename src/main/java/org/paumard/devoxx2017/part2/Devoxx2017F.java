@@ -4,6 +4,7 @@ import org.paumard.devoxx2017.model.Article;
 
 import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Devoxx2017F {
 
@@ -24,5 +25,13 @@ public class Devoxx2017F {
                 articleWithTheMostAuthors.getAuthors().size());
 
         // articles with the most authors for each year
+
+        articles.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                Article::getInceptionYear,
+                                collector
+                        )
+                );
     }
 }
