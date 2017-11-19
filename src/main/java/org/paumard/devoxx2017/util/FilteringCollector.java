@@ -21,7 +21,10 @@ public class FilteringCollector<T, A, R> implements Collector<T, A, R> {
 
     @Override
     public BiConsumer<A, T> accumulator() {
-        return downstream.accumulator();
+        return (container, element) -> {
+            if (filter.test(element))
+                downstream.accumulator().accept(container, element);
+        };
     }
 
     @Override
