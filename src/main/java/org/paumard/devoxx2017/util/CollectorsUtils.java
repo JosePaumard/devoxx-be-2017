@@ -21,7 +21,7 @@ public class CollectorsUtils {
         return maxBy(Map.Entry.<K, V>comparingByValue());
     }
 
-    private static <K, V extends Comparable<? super V>> Function<Map<K, V>, Map.Entry<K, V>>
+    public static <K, V extends Comparable<? super V>> Function<Map<K, V>, Map.Entry<K, V>>
     maxBy(Comparator<Map.Entry<K, V>> comparator) {
         return map -> map.entrySet().stream()
                 .max(comparator)
