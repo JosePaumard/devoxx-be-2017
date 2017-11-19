@@ -25,12 +25,16 @@ public class Devoxx2017E {
                         );
         System.out.println("numberOfArticlePerYear.size() = " + numberOfArticlePerYear.size());
 
-        Map.Entry<Long, List<Map.Entry<Integer, Long>>> allMaxesNumberOFArticlesPerYear =
+        Map.Entry<Long, List<Integer>> allMaxesNumberOFArticlesPerYear =
                 numberOfArticlePerYear
                         .entrySet().stream() // Stream<Map.Entry<Integer, Long>>
                         .collect(
                                 Collectors.groupingBy(
-                                        entry -> entry.getValue()
+                                        entry -> entry.getValue(),
+                                        Collectors.mapping(
+                                                entry -> entry.getKey(),
+                                                Collectors.toList()
+                                        )
                                 )
                         )
                         .entrySet().stream()
