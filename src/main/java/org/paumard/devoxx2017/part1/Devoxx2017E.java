@@ -42,5 +42,24 @@ public class Devoxx2017E {
                         .get();
         System.out.println("allMaxesNumberOFArticlesPerYear = " + allMaxesNumberOFArticlesPerYear);
 
+        Map.Entry<Long, List<Integer>> allMaxesNumberOFArticlesPerYear2 =
+        numberOfArticlePerYear
+                .entrySet().stream() // Stream<Map.Entry<Integer, Long>>
+                .collect(
+                        Collectors.groupingBy(
+                                entry -> entry.getValue()
+                        )
+                )
+                .entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getKey(),
+                                entry -> entry.getValue().stream().map(e -> e.getKey()).collect(Collectors.toList())
+                        )
+                )
+                .entrySet().stream()
+                .max(Comparator.comparing(entry -> entry.getKey()))
+                .get();
+        System.out.println("allMaxesNumberOFArticlesPerYear2 bis = " + allMaxesNumberOFArticlesPerYear2);
     }
 }
