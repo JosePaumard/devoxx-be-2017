@@ -39,18 +39,6 @@ public class Devoxx2017G {
                         );
         System.out.println("mostSeenDuo = " + mostSeenDuo);
 
-
-        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
-                articles.stream()
-                        .collect(
-                                Collectors.groupingBy(
-                                        Article::getInceptionYear,
-                                        mostSeenDuoCollector
-                                )
-                        );
-        System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
-
-
 //        Collector<Article, ?, Entry<Entry<Author, Author>, Long>> mostSeenDuoCollector2 =
         Collector<Article, ?, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoCollector2 =
                 Collectors.flatMapping(
@@ -62,5 +50,16 @@ public class Devoxx2017G {
                                         .stream()
                         )
                 );
+
+//        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
+        Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoPerYear =
+                articles.stream()
+                        .collect(
+                                Collectors.groupingBy(
+                                        Article::getInceptionYear,
+                                        mostSeenDuoCollector2
+                                )
+                        );
+        System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
     }
 }
