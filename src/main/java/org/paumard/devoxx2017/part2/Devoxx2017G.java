@@ -67,5 +67,9 @@ public class Devoxx2017G {
                         )
                         .collect(CollectorsUtils.toNaturalMap());
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
+        System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear);
+        mostSeenDuoPerYear.forEach(
+                (year, duoEntry) -> System.out.println(year + ": " + duoEntry)
+        );
     }
 }
