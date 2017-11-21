@@ -2,7 +2,10 @@ package org.paumard.devoxx2017.part2;
 
 import org.paumard.devoxx2017.model.Article;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -56,7 +59,7 @@ public class Devoxx2017F {
                 entry -> entry.getValue().map(value -> Map.entry(entry.getKey(), value));
 
 //        Stream<Map.Entry<Integer, Article>> stream =
-        Map<Integer, List<Map.Entry<Integer, Article>>> map =
+        Map<Integer, Article> map =
                 articles.stream()
                         .collect(
                                 Collectors.groupingBy(
@@ -67,13 +70,14 @@ public class Devoxx2017F {
                         .entrySet().stream()
                         .flatMap(flatMapper)
                         .collect(
-                                Collectors.groupingBy(
-                                        Map.Entry::getKey
+                                Collectors.toMap(
+                                        entry -> entry.getKey(),
+                                        entry -> entry.getValue()
                                 )
-
-
                         );
         System.out.println("map.size() = " + map.size());
-
+        map.forEach(
+                (year, article) -> System.out.println(year + ": " + article.getAuthors().size() + " authors for " + article.getTitle())
+        );
     }
 }
