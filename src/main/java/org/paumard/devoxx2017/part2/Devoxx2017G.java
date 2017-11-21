@@ -51,14 +51,15 @@ public class Devoxx2017G {
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
 
 
-        Collector<Article, ?, Entry<Entry<Author, Author>, Long>> mostSeenDuoCollector2 =
+//        Collector<Article, ?, Entry<Entry<Author, Author>, Long>> mostSeenDuoCollector2 =
+        Collector<Article, ?, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoCollector2 =
                 Collectors.flatMapping(
                         article -> function.apply(article.getAuthors().stream()),
                         Collectors.collectingAndThen(
                                 CollectorsUtils.groupingBySelfAndCounting(),
                                 map -> map.entrySet().stream()
                                         .max(Entry.<Entry<Author, Author>, Long>comparingByValue())
-                                        .get()
+                                        .stream()
                         )
                 );
     }
