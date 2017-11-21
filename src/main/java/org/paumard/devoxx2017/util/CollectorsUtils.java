@@ -30,7 +30,7 @@ public class CollectorsUtils {
                 .get();
     }
 
-    public static Collector<Author, ?, Map<Author, Long>>
+    public static <T> Collector<T, ?, Map<T, Long>>
     groupingBySelfAndCounting() {
         return groupingByAndCounting(Function.identity());
     }
