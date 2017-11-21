@@ -24,11 +24,14 @@ public class Devoxx2017G {
 
         Map.Entry<Entry<Author, Author>, Long> mostSeenDuo =
                 articles.stream()
-                        .flatMap(article -> function.apply(article.getAuthors().stream()))
+//                        .flatMap(article -> function.apply(article.getAuthors().stream()))
                         .collect(
-                                Collectors.collectingAndThen(
-                                        CollectorsUtils.groupingBySelfAndCounting(),
-                                        CollectorsUtils.maxByValue()
+                                Collectors.flatMapping(
+                                        article -> function.apply(article.getAuthors().stream()),
+                                        Collectors.collectingAndThen(
+                                                CollectorsUtils.groupingBySelfAndCounting(),
+                                                CollectorsUtils.maxByValue()
+                                        )
                                 )
                         );
         System.out.println("mostSeenDuo = " + mostSeenDuo);
