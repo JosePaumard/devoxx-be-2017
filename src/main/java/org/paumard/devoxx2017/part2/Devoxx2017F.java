@@ -2,10 +2,7 @@ package org.paumard.devoxx2017.part2;
 
 import org.paumard.devoxx2017.model.Article;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -55,21 +52,28 @@ public class Devoxx2017F {
         // Map.Entry<Integer, Stream<Article>> -> Stream<Map.Entry<Integer, Article>>
 
 //        Stream<Map.Entry<Integer, Stream<Article>>> stream =
-        Function<Map.Entry<Integer, Stream<Article>>, Stream<Map.Entry<Integer, Article>>> mapper =
+        Function<Map.Entry<Integer, Stream<Article>>, Stream<Map.Entry<Integer, Article>>> flatMapper =
                 entry -> entry.getValue().map(value -> Map.entry(entry.getKey(), value));
-        
-        articles.stream()
+
+//        Stream<Map.Entry<Integer, Article>> stream =
+        Map<Integer, List<Map.Entry<Integer, Article>>> map =
+                articles.stream()
                         .collect(
                                 Collectors.groupingBy(
                                         Article::getInceptionYear,
                                         collector2
                                 )
                         )
-                .entrySet().stream()
-                .map(
-                        mapper
-                );
-//        System.out.println("map.size() = " + map.size());
+                        .entrySet().stream()
+                        .flatMap(flatMapper)
+                        .collect(
+                                Collectors.groupingBy(
+                                        Map.Entry::getKey
+                                )
+
+
+                        );
+        System.out.println("map.size() = " + map.size());
 
     }
 }
