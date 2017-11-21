@@ -32,7 +32,7 @@ public class Devoxx2017F {
                 articleWithTheMostAuthors.getAuthors().size());
 
         // articles with the most authors for each year
-        Collector<Article, ?, Article> collector =
+        Collector<Article, ?, Article> optionalCollector =
                 Collectors.filtering(
                         article -> article.getInceptionYear() > 1900,
                         Collectors.collectingAndThen(
@@ -43,7 +43,7 @@ public class Devoxx2017F {
                         )
                 );
 
-        Collector<Article, ?, Stream<Article>> collector2 =
+        Collector<Article, ?, Stream<Article>> articleWithTheMostAuthor =
                 Collectors.filtering(
                         article -> article.getInceptionYear() > 1900,
                         Collectors.collectingAndThen(
@@ -57,7 +57,7 @@ public class Devoxx2017F {
         // Map.Entry<Integer, Stream<Article>> -> Stream<Map.Entry<Integer, Article>>
 
 //        Stream<Map.Entry<Integer, Stream<Article>>> stream =
-        Function<Entry<Integer, Stream<Article>>, Stream<Entry<Integer, Article>>> flatMapper =
+        Function<Entry<Integer, Stream<Article>>, Stream<Entry<Integer, Article>>> emptyStreamsRemover =
                 entry -> entry.getValue().map(value -> Map.entry(entry.getKey(), value));
 
 //        Stream<Map.Entry<Integer, Article>> stream =
@@ -65,30 +65,30 @@ public class Devoxx2017F {
                 .collect(
                         Collectors.groupingBy(
                                 Article::getInceptionYear,
-                                collector2
+                                articleWithTheMostAuthor
                         )
                 );
 
-        Function<Map<Integer, Stream<Article>>, Map<Integer, Article>> function =
+        Function<Map<Integer, Stream<Article>>, Map<Integer, Article>> emptyStreamValuesRemover =
                 map ->
                         map.entrySet().stream()
                                 .collect(
-                                        Collectors.flatMapping(flatMapper, CollectorsUtils.toNaturalMap())
+                                        Collectors.flatMapping(emptyStreamsRemover, CollectorsUtils.toNaturalMap())
                                 );
 
-        Collector<Article, ?, Map<Integer, Article>> mapCollector =
+        Collector<Article, ?, Map<Integer, Article>> finalCollector =
                 Collectors.collectingAndThen(
                         Collectors.groupingBy(
                                 Article::getInceptionYear,
-                                collector2
+                                articleWithTheMostAuthor
                         ),
-                        function
+                        emptyStreamValuesRemover
                 );
-        
+
         Map<Integer, Article> map =
                 articles.stream()
                         .collect(
-                                mapCollector
+                                finalCollector
                         );
 
         System.out.println("map.size() = " + map.size());
