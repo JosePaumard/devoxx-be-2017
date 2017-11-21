@@ -76,16 +76,19 @@ public class Devoxx2017F {
                                         Collectors.flatMapping(flatMapper, CollectorsUtils.toNaturalMap())
                                 );
 
+        Collector<Article, ?, Map<Integer, Article>> mapCollector =
+                Collectors.collectingAndThen(
+                        Collectors.groupingBy(
+                                Article::getInceptionYear,
+                                collector2
+                        ),
+                        function
+                );
+        
         Map<Integer, Article> map =
                 articles.stream()
                         .collect(
-                                Collectors.collectingAndThen(
-                                        Collectors.groupingBy(
-                                                Article::getInceptionYear,
-                                                collector2
-                                        ),
-                                        function
-                                )
+                                mapCollector
                         );
 
         System.out.println("map.size() = " + map.size());
