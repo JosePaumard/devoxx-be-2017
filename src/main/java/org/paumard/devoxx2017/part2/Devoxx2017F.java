@@ -70,9 +70,8 @@ public class Devoxx2017F {
                                 )
                         )
                         .entrySet().stream()
-                        .flatMap(flatMapper)
                         .collect(
-                                CollectorsUtils.toNaturalMap()
+                                Collectors.flatMapping(flatMapper, CollectorsUtils.toNaturalMap())
                         );
         System.out.println("map.size() = " + map.size());
         map.forEach(
