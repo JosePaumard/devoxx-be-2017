@@ -34,4 +34,9 @@ public class CollectorsUtils {
     groupingBySelfAndCounting() {
         return groupingByAndCounting(Function.identity());
     }
+
+    public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>>
+    toNaturalMap() {
+        return Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue);
+    }
 }
