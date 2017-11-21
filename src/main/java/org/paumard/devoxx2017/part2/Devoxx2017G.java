@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,20 +23,32 @@ public class Devoxx2017G {
         Function<Stream<Author>, Stream<Entry<Author, Author>>> function =
                 authorStream -> StreamsUtils.crossProductOrdered(authorStream, Comparator.comparing(Author::getLastName));
 
+        Collector<Article, ?, Entry<Entry<Author, Author>, Long>> mostSeenDuoCollector =
+                Collectors.flatMapping(
+                        article -> function.apply(article.getAuthors().stream()),
+                        Collectors.collectingAndThen(
+                                CollectorsUtils.groupingBySelfAndCounting(),
+                                CollectorsUtils.maxByValue()
+                        )
+                );
+
         Map.Entry<Entry<Author, Author>, Long> mostSeenDuo =
                 articles.stream()
-//                        .flatMap(article -> function.apply(article.getAuthors().stream()))
                         .collect(
-                                Collectors.flatMapping(
-                                        article -> function.apply(article.getAuthors().stream()),
-                                        Collectors.collectingAndThen(
-                                                CollectorsUtils.groupingBySelfAndCounting(),
-                                                CollectorsUtils.maxByValue()
-                                        )
-                                )
+                                mostSeenDuoCollector
                         );
         System.out.println("mostSeenDuo = " + mostSeenDuo);
 
+
+        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
+                articles.stream()
+                        .collect(
+                                Collectors.groupingBy(
+                                        Article::getInceptionYear,
+                                        mostSeenDuoCollector
+                                )
+                        );
+        System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
     }
 
 }
