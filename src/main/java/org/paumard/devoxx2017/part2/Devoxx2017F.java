@@ -61,18 +61,33 @@ public class Devoxx2017F {
                 entry -> entry.getValue().map(value -> Map.entry(entry.getKey(), value));
 
 //        Stream<Map.Entry<Integer, Article>> stream =
+        Map<Integer, Stream<Article>> streamMap = articles.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                Article::getInceptionYear,
+                                collector2
+                        )
+                );
+
+        Function<Map<Integer, Stream<Article>>, Map<Integer, Article>> function =
+                map ->
+                        map.entrySet().stream()
+                                .collect(
+                                        Collectors.flatMapping(flatMapper, CollectorsUtils.toNaturalMap())
+                                );
+
         Map<Integer, Article> map =
                 articles.stream()
                         .collect(
-                                Collectors.groupingBy(
-                                        Article::getInceptionYear,
-                                        collector2
+                                Collectors.collectingAndThen(
+                                        Collectors.groupingBy(
+                                                Article::getInceptionYear,
+                                                collector2
+                                        ),
+                                        function
                                 )
-                        )
-                        .entrySet().stream()
-                        .collect(
-                                Collectors.flatMapping(flatMapper, CollectorsUtils.toNaturalMap())
                         );
+
         System.out.println("map.size() = " + map.size());
         map.forEach(
                 (year, article) -> System.out.println(year + ": " + article.getAuthors().size() + " authors for " + article.getTitle())
