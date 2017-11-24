@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CollectorsUtils {
 
@@ -38,5 +39,15 @@ public class CollectorsUtils {
     public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>>
     toNaturalMap() {
         return Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue);
+    }
+
+    public static <K, V> Function<Map<K, Stream<V>>, Map<K, V>>
+    removeEmptyStreams() {
+        return map -> map
+                .entrySet().stream()
+                .flatMap(
+                        entry -> entry.getValue().map(e -> Map.entry(entry.getKey(), e))
+                )
+                .collect(toNaturalMap());
     }
 }

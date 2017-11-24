@@ -63,7 +63,7 @@ public class Devoxx2017G {
                         );
 
         Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
-                getCollect(map);
+                CollectorsUtils.<Integer, Entry<Entry<Author, Author>, Long>>removeEmptyStreams().apply(map);
 
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear);
@@ -72,12 +72,4 @@ public class Devoxx2017G {
         );
     }
 
-    private static Map<Integer, Entry<Entry<Author, Author>, Long>> getCollect(Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> map) {
-        return map
-                .entrySet().stream()
-                .flatMap(
-                        entry -> entry.getValue().map(e -> Map.entry(entry.getKey(), e))
-                )
-                .collect(CollectorsUtils.toNaturalMap());
-    }
 }
