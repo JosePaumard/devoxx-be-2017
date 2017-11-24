@@ -31,23 +31,27 @@ public class DevoxxH {
         // Map<Author, List<Article>>
 
 //        Map<Author, List<Entry<Article, Author>>> articlesPerAuthor =
-        Function<Map<Article, List<Author>>, Map<Author, List<Article>>> function =
-                map -> map.entrySet().stream()
-                        .collect(
-                                Collectors.flatMapping(
-                                        entry -> entry.getValue().stream().map(author -> Map.entry(entry.getKey(), author)),
-                                        Collectors.groupingBy(
-                                                Entry::getValue,
-                                                Collectors.mapping(
-                                                        Entry::getKey,
-                                                        Collectors.toList()
-                                                )
-
-                                        )
-                                )
-                        );
+        Function<Map<Article, List<Author>>, Map<Author, List<Article>>> function = invertMultiMap();
 
         Map<Author, List<Article>> articlesPerAuthor = function.apply(authorsPerArticles);
         System.out.println("articlesPerAuthor = " + articlesPerAuthor.size());
+    }
+
+    private static Function<Map<Article, List<Author>>, Map<Author, List<Article>>>
+    invertMultiMap() {
+        return map -> map.entrySet().stream()
+                .collect(
+                        Collectors.flatMapping(
+                                entry -> entry.getValue().stream().map(author -> Map.entry(entry.getKey(), author)),
+                                Collectors.groupingBy(
+                                        Entry::getValue,
+                                        Collectors.mapping(
+                                                Entry::getKey,
+                                                Collectors.toList()
+                                        )
+
+                                )
+                        )
+                );
     }
 }
