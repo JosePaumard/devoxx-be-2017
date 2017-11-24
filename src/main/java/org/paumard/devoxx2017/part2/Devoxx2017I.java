@@ -48,5 +48,6 @@ public class Devoxx2017I {
                 .collect(mapping)
                 .collect(filtering)
                 .collect(toList());
+        System.out.println("lengths3 = " + lengths3);
     }
 }
