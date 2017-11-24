@@ -49,5 +49,13 @@ public class Devoxx2017I {
                 .collect(filtering)
                 .collect(toList());
         System.out.println("lengths3 = " + lengths3);
+
+        Collector<String, ?, List<Integer>> collector =
+                mapping.thenCollect(filtering)
+                        .thenCollect(toList());
+
+        List<Integer> lengths4 =
+                strings.stream()
+                        .collect(collector);
     }
 }
