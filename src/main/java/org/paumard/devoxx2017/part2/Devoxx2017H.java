@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class DevoxxH {
+public class Devoxx2017H {
 
     public static void main(String[] args) {
 
