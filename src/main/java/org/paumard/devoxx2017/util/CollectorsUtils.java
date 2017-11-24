@@ -4,6 +4,7 @@ import org.paumard.devoxx2017.model.Author;
 import org.paumard.streams.StreamsUtils;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -66,5 +67,23 @@ public class CollectorsUtils {
                                 .stream()
                 )
         );
+    }
+
+    public static <K, V> Function<Map<K, List<V>>, Map<V, List<K>>>
+    invertMultiMap() {
+        return map -> map.entrySet().stream()
+                .collect(
+                        Collectors.flatMapping(
+                                entry -> entry.getValue().stream().map(value -> Map.entry(entry.getKey(), value)),
+                                Collectors.groupingBy(
+                                        Map.Entry::getValue,
+                                        Collectors.mapping(
+                                                Map.Entry::getKey,
+                                                Collectors.toList()
+                                        )
+
+                                )
+                        )
+                );
     }
 }
