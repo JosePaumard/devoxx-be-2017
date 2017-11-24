@@ -1,7 +1,10 @@
 package org.paumard.devoxx2017.part2;
 
+import org.paumard.devoxx2017.collectors.StreamingCollector;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,8 +40,8 @@ public class Devoxx2017I {
                         );
         System.out.println("lengths2 = " + lengths2);
 
-        Collector<String, ?, Stream<Integer>> mapping = null;
-        Collector<Integer, ?, Stream<Integer>> filtering = null;
+        Collector<String, ?, Stream<Integer>> mapping = Collectors.mapping(String::length, new StreamingCollector<>());
+        Collector<Integer, ?, Stream<Integer>> filtering = Collectors.filtering(length -> length > 3, new StreamingCollector<>());
 
         List<Integer> lengths3 =
         strings.stream()
