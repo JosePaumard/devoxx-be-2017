@@ -14,6 +14,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.paumard.devoxx2017.util.CollectorsUtils.removeEmptyStreams;
+
 public class Devoxx2017G {
 
     public static void main(String[] args) {
@@ -53,17 +55,17 @@ public class Devoxx2017G {
 
 //        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
 //        Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoPerYear =
-        Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> map =
+        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
                 articles.stream()
                         .collect(
-                                Collectors.groupingBy(
-                                        Article::getInceptionYear,
-                                        mostSeenDuoCollector2
+                                Collectors.collectingAndThen(
+                                        Collectors.groupingBy(
+                                                Article::getInceptionYear,
+                                                mostSeenDuoCollector2
+                                        ),
+                                        removeEmptyStreams()
                                 )
                         );
-
-        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
-                CollectorsUtils.<Integer, Entry<Entry<Author, Author>, Long>>removeEmptyStreams().apply(map);
 
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear);
