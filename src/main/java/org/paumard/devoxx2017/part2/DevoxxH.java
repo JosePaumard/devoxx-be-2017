@@ -30,19 +30,19 @@ public class DevoxxH {
 
         // Map<Author, List<Article>>
 
-//        Map<Author, List<Entry<Article, Author>>> articlesPerAuthor =
+//        Map<Author, List<Entry<Article, V>>> articlesPerAuthor =
         Function<Map<Article, List<Author>>, Map<Author, List<Article>>> function = invertMultiMap();
 
         Map<Author, List<Article>> articlesPerAuthor = function.apply(authorsPerArticles);
         System.out.println("articlesPerAuthor = " + articlesPerAuthor.size());
     }
 
-    private static Function<Map<Article, List<Author>>, Map<Author, List<Article>>>
+    public static <K, V> Function<Map<K, List<V>>, Map<V, List<K>>>
     invertMultiMap() {
         return map -> map.entrySet().stream()
                 .collect(
                         Collectors.flatMapping(
-                                entry -> entry.getValue().stream().map(author -> Map.entry(entry.getKey(), author)),
+                                entry -> entry.getValue().stream().map(value -> Map.entry(entry.getKey(), value)),
                                 Collectors.groupingBy(
                                         Entry::getValue,
                                         Collectors.mapping(
