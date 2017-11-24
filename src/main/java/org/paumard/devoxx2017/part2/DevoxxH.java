@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DevoxxH {
@@ -30,9 +31,8 @@ public class DevoxxH {
         // Map<Author, List<Article>>
 
 //        Map<Author, List<Entry<Article, Author>>> articlesPerAuthor =
-        Map<Author, List<Article>> articlesPerAuthor =
-                authorsPerArticles
-                        .entrySet().stream()
+        Function<Map<Article, List<Author>>, Map<Author, List<Article>>> function =
+                map -> map.entrySet().stream()
                         .collect(
                                 Collectors.flatMapping(
                                         entry -> entry.getValue().stream().map(author -> Map.entry(entry.getKey(), author)),
@@ -46,6 +46,8 @@ public class DevoxxH {
                                         )
                                 )
                         );
+
+        Map<Author, List<Article>> articlesPerAuthor = function.apply(authorsPerArticles);
         System.out.println("articlesPerAuthor = " + articlesPerAuthor.size());
     }
 }
