@@ -50,8 +50,8 @@ public class Devoxx2017I {
                         .collect(toList());
         System.out.println("lengths3 = " + lengths3);
 
-        ComposableCollector<String, ?, Integer> composableMapping = null;
-        ComposableCollector<Integer, ?, Integer> composableFiltering = null;
+        ComposableCollector<String, ?, Integer> composableMapping = ComposableCollector.mapping(String::length);
+        ComposableCollector<Integer, ?, Integer> composableFiltering = ComposableCollector.filtering(length -> length > 3);
 
         Collector<String, ?, List<Integer>> composedCollector =
                 composableMapping.thenCollect(composableFiltering)
@@ -60,5 +60,6 @@ public class Devoxx2017I {
         List<Integer> lengths4 =
                 strings.stream()
                         .collect(composedCollector);
+        System.out.println("lengths4 = " + lengths4);
     }
 }
