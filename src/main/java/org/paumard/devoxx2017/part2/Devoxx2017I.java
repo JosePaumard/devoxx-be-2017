@@ -1,10 +1,10 @@
 package org.paumard.devoxx2017.part2;
 
+import org.paumard.devoxx2017.collectors.ComposableCollector;
 import org.paumard.devoxx2017.collectors.StreamingCollector;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,18 +44,21 @@ public class Devoxx2017I {
         Collector<Integer, ?, Stream<Integer>> filtering = Collectors.filtering(length -> length > 3, new StreamingCollector<>());
 
         List<Integer> lengths3 =
-        strings.stream()
-                .collect(mapping)
-                .collect(filtering)
-                .collect(toList());
+                strings.stream()
+                        .collect(mapping)
+                        .collect(filtering)
+                        .collect(toList());
         System.out.println("lengths3 = " + lengths3);
 
-        Collector<String, ?, List<Integer>> collector =
-                mapping.thenCollect(filtering)
+        ComposableCollector<String, ?, Integer> composableMapping = null;
+        ComposableCollector<Integer, ?, Integer> composableFiltering = null;
+
+        Collector<String, ?, List<Integer>> composedCollector =
+                composableMapping.thenCollect(composableFiltering)
                         .thenCollect(toList());
 
         List<Integer> lengths4 =
                 strings.stream()
-                        .collect(collector);
+                        .collect(composedCollector);
     }
 }
