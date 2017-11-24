@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class Devoxx2017I {
 
@@ -15,7 +18,7 @@ public class Devoxx2017I {
                 strings.stream()
                         .map(String::length)
                         .filter(length -> length > 3)
-                        .collect(Collectors.toList());
+                        .collect(toList());
         System.out.println("lengths1 = " + lengths1);
 
         Collector<String, ?, List<Integer>> collector =
@@ -23,15 +26,24 @@ public class Devoxx2017I {
                         String::length,
                         Collectors.filtering(
                                 length -> length > 3,
-                                Collectors.toList()
+                                toList()
                         )
                 );
-        
+
         List<Integer> lengths2 =
                 strings.stream()
                         .collect(
                                 collector
                         );
         System.out.println("lengths2 = " + lengths2);
+
+        Collector<String, ?, Stream<Integer>> mapping = null;
+        Collector<Integer, ?, Stream<Integer>> filtering = null;
+
+        List<Integer> lengths3 =
+        strings.stream()
+                .collect(mapping)
+                .collect(filtering)
+                .collect(toList());
     }
 }
