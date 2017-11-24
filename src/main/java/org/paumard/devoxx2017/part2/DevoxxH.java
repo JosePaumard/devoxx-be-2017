@@ -33,16 +33,19 @@ public class DevoxxH {
         Map<Author, List<Article>> articlesPerAuthor =
                 authorsPerArticles
                         .entrySet().stream()
-                        .flatMap(entry -> entry.getValue().stream().map(author -> Map.entry(entry.getKey(), author)))
                         .collect(
-                                Collectors.groupingBy(
-                                        Entry::getValue,
-                                        Collectors.mapping(
-                                                Entry::getKey,
-                                                Collectors.toList()
-                                        )
+                                Collectors.flatMapping(
+                                        entry -> entry.getValue().stream().map(author -> Map.entry(entry.getKey(), author)),
+                                        Collectors.groupingBy(
+                                                Entry::getValue,
+                                                Collectors.mapping(
+                                                        Entry::getKey,
+                                                        Collectors.toList()
+                                                )
 
+                                        )
                                 )
                         );
+        System.out.println("articlesPerAuthor = " + articlesPerAuthor.size());
     }
 }
