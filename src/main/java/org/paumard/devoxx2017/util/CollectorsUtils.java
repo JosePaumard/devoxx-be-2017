@@ -1,6 +1,7 @@
 package org.paumard.devoxx2017.util;
 
 import org.paumard.devoxx2017.model.Author;
+import org.paumard.streams.StreamsUtils;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -49,5 +50,21 @@ public class CollectorsUtils {
                         entry -> entry.getValue().map(e -> Map.entry(entry.getKey(), e))
                 )
                 .collect(toNaturalMap());
+    }
+
+    public static <T, V> Collector<T, ?, Stream<Map.Entry<Map.Entry<V, V>, Long>>>
+    mostSeenDuo(
+            Function<T, Stream<V>> streamMapper, Comparator<V> comparator
+    ) {
+
+        return Collectors.flatMapping(
+                article -> StreamsUtils.crossProductOrdered(streamMapper.apply(article), comparator),
+                Collectors.collectingAndThen(
+                        groupingBySelfAndCounting(),
+                        map -> map.entrySet().stream()
+                                .max(Map.Entry.<Map.Entry<V, V>, Long>comparingByValue())
+                                .stream()
+                )
+        );
     }
 }

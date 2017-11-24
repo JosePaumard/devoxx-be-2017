@@ -5,7 +5,6 @@ import org.paumard.devoxx2017.model.Author;
 import org.paumard.devoxx2017.util.CollectorsUtils;
 import org.paumard.streams.StreamsUtils;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -15,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
+import static org.paumard.devoxx2017.util.CollectorsUtils.mostSeenDuo;
 import static org.paumard.devoxx2017.util.CollectorsUtils.removeEmptyStreams;
 
 public class Devoxx2017G {
@@ -52,7 +52,7 @@ public class Devoxx2017G {
                                 Collectors.collectingAndThen(
                                         Collectors.groupingBy(
                                                 Article::getInceptionYear,
-                                                getMostSeenDuo(article -> article.getAuthors().stream(), comparing(Author::getLastName))
+                                                mostSeenDuo(article -> article.getAuthors().stream(), comparing(Author::getLastName))
                                         ),
                                         removeEmptyStreams()
                                 )
@@ -62,22 +62,6 @@ public class Devoxx2017G {
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear);
         mostSeenDuoPerYear.forEach(
                 (year, duoEntry) -> System.out.println(year + ": " + duoEntry)
-        );
-    }
-
-    public static <T, V> Collector<T, ?, Stream<Entry<Entry<V, V>, Long>>>
-    getMostSeenDuo(
-            Function<T, Stream<V>> streamMapper, Comparator<V> comparator
-    ) {
-
-        return Collectors.flatMapping(
-                article -> StreamsUtils.crossProductOrdered(streamMapper.apply(article), comparator),
-                Collectors.collectingAndThen(
-                        CollectorsUtils.groupingBySelfAndCounting(),
-                        map -> map.entrySet().stream()
-                                .max(Entry.<Entry<V, V>, Long>comparingByValue())
-                                .stream()
-                )
         );
     }
 
