@@ -53,19 +53,23 @@ public class Devoxx2017G {
 
 //        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
 //        Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoPerYear =
-        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
+        Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> map =
                 articles.stream()
                         .collect(
                                 Collectors.groupingBy(
                                         Article::getInceptionYear,
                                         mostSeenDuoCollector2
                                 )
-                        )
+                        );
+        
+        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
+                map
                         .entrySet().stream()
                         .flatMap(
                                 entry -> entry.getValue().map(e -> Map.entry(entry.getKey(), e))
                         )
                         .collect(CollectorsUtils.toNaturalMap());
+
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear.size());
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear);
         mostSeenDuoPerYear.forEach(
