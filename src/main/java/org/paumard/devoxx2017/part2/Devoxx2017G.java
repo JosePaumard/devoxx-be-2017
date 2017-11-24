@@ -14,6 +14,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
 import static org.paumard.devoxx2017.util.CollectorsUtils.removeEmptyStreams;
 
 public class Devoxx2017G {
@@ -23,7 +24,7 @@ public class Devoxx2017G {
         Set<Article> articles = Article.readAll();
 
         Function<Stream<Author>, Stream<Entry<Author, Author>>> function =
-                authorStream -> StreamsUtils.crossProductOrdered(authorStream, Comparator.comparing(Author::getLastName));
+                authorStream -> StreamsUtils.crossProductOrdered(authorStream, comparing(Author::getLastName));
 
         Collector<Article, ?, Entry<Entry<Author, Author>, Long>> mostSeenDuoCollector =
                 Collectors.flatMapping(
@@ -42,16 +43,6 @@ public class Devoxx2017G {
         System.out.println("mostSeenDuo = " + mostSeenDuo);
 
 //        Collector<Article, ?, Entry<Entry<Author, Author>, Long>> mostSeenDuoCollector2 =
-        Collector<Article, ?, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoCollector2 =
-                Collectors.flatMapping(
-                        article -> function.apply(article.getAuthors().stream()),
-                        Collectors.collectingAndThen(
-                                CollectorsUtils.groupingBySelfAndCounting(),
-                                map -> map.entrySet().stream()
-                                        .max(Entry.<Entry<Author, Author>, Long>comparingByValue())
-                                        .stream()
-                        )
-                );
 
 //        Map<Integer, Entry<Entry<Author, Author>, Long>> mostSeenDuoPerYear =
 //        Map<Integer, Stream<Entry<Entry<Author, Author>, Long>>> mostSeenDuoPerYear =
@@ -61,7 +52,7 @@ public class Devoxx2017G {
                                 Collectors.collectingAndThen(
                                         Collectors.groupingBy(
                                                 Article::getInceptionYear,
-                                                mostSeenDuoCollector2
+                                                getMostSeenDuo(article -> article.getAuthors().stream(), comparing(Author::getLastName))
                                         ),
                                         removeEmptyStreams()
                                 )
@@ -71,6 +62,22 @@ public class Devoxx2017G {
         System.out.println("mostSeenDuoPerYear = " + mostSeenDuoPerYear);
         mostSeenDuoPerYear.forEach(
                 (year, duoEntry) -> System.out.println(year + ": " + duoEntry)
+        );
+    }
+
+    public static <T, V> Collector<T, ?, Stream<Entry<Entry<V, V>, Long>>>
+    getMostSeenDuo(
+            Function<T, Stream<V>> streamMapper, Comparator<V> comparator
+    ) {
+
+        return Collectors.flatMapping(
+                article -> StreamsUtils.crossProductOrdered(streamMapper.apply(article), comparator),
+                Collectors.collectingAndThen(
+                        CollectorsUtils.groupingBySelfAndCounting(),
+                        map -> map.entrySet().stream()
+                                .max(Entry.<Entry<V, V>, Long>comparingByValue())
+                                .stream()
+                )
         );
     }
 
